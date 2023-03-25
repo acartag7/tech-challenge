@@ -35,6 +35,8 @@ def show_help() -> str:
     <h1>Instructions</h1>
     <p>To encode a string, go to /{string}</p>
     <p>The input string can only contain alphanumeric characters (A-Z, a-z, 0-9)</p>
+    <p>Example: /hello</p>
+    <p>Result: {"result": "mjqqt"}</p>
     """
 
 class BadRequest(Exception):
