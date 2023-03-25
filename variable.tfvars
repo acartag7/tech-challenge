@@ -8,12 +8,13 @@ addon_version_vpc_cni    = "v1.9.0-eksbuild.1"
 control_plane_logs       = ["api", "audit", "controllerManager", "scheduler"]
 private_eks_subnets      = ["10.0.208.0/20", "10.0.224.0/20", "10.0.240.0/20"]
 
+# The cluster was created with 2 nodes and it was not enough to install all the required resources
 node_groups = {
   sandbox = {
-    min_capacity     = "1"
-    desired_capacity = "2"
-    max_capacity     = "3"
-    instance_types   = ["t3.small"]
+    min_capacity     = "2"
+    desired_capacity = "3"
+    max_capacity     = "4"
+    instance_types   = ["t3.medium"]
     k8s_labels = {
       k8s-node = "sandbox"
     }

@@ -1,4 +1,4 @@
-awsRegion: "eu-central-1"
+awsRegion: "us-east-1"
 
 autoDiscovery:
   clusterName: ${eks_cluster_name}

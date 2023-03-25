@@ -1,7 +1,7 @@
 variable "region" {
   description = "Region that the instances will be created"
   type        = string
-  default     = "eu-central-1"
+  default     = "us-east-1"
 }
 
 variable "environment" {
@@ -16,7 +16,7 @@ variable "github_repo" {
 }
 
 terraform {
-  required_version = "1.1.7"
+  required_version = ">= 1.0.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -34,9 +34,9 @@ terraform {
 }
 
 provider "aws" {
-  region                  = "eu-central-1"
-  shared_credentials_file = ".aws/creds"
-  profile                 = "AWSAdministratorAccess"
+  region                  = "us-east-1"
+# shared_credentials_file = ".aws/creds"
+# profile                 = "AWSAdministratorAccess"
   default_tags {
     tags = {
       Landscape   = var.environment
@@ -68,13 +68,13 @@ provider "helm" {
 # The S3 repo has been manually created in AWS
 # ---------------------------------------------------------------------------------------------------------------------
 
-terraform {
-  backend "s3" {
-    region  = "eu-central-1"
-    bucket  = "tfstate-sandbox"
-    key     = "techchallenge/terraform_state"
-    shared_credentials_file = ".aws/creds"
-    profile                 = "AWSAdministratorAccess"
-    encrypt = "true"
-  }
-}
+# terraform {
+#   backend "s3" {
+#     region  = "eu-central-1"
+#     bucket  = "tfstate-sandbox"
+#     key     = "techchallenge/terraform_state"
+#     shared_credentials_file = ".aws/creds"
+#     profile                 = "AWSAdministratorAccess"
+#     encrypt = "true"
+#   }
+# }
