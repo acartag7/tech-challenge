@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify
 import os
+from flask import Flask, jsonify, request
 
 flask_app = Flask(__name__)
 
 @flask_app.route('/<string:plaintext>')
 def encode(plaintext: str) -> jsonify:
+    """Encodes a given string with a simple cipher."""
     if not plaintext.isalnum():
         raise BadRequest("Input must contain only alphanumeric characters.")
     encoded = ''
@@ -20,10 +21,12 @@ def encode(plaintext: str) -> jsonify:
 
 @flask_app.route('/status')
 def status() -> jsonify:
+    """Returns the status of the server."""
     return jsonify({'status': 'ok'})
 
 @flask_app.route('/help')
-def help() -> jsonify:
+def show_help() -> str:
+    """Returns instructions on how to use the server."""
     return """
     <h1>Instructions</h1>
     <p>To encode a string, go to /{string}</p>
@@ -31,10 +34,12 @@ def help() -> jsonify:
     """
 
 class BadRequest(Exception):
+    """Exception raised for invalid requests."""
     pass
 
 @flask_app.errorhandler(BadRequest)
-def bad_request(error):
+def handle_bad_request(error) -> jsonify:
+    """Handles BadRequest exceptions."""
     return jsonify({'error': str(error)}), 400
 
 if __name__ == '__main__':
