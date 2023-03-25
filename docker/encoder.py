@@ -1,5 +1,9 @@
+"""
+This module contains a Flask app that encodes alphanumeric strings
+"""
+
 import os
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 
 flask_app = Flask(__name__)
 
@@ -35,7 +39,6 @@ def show_help() -> str:
 
 class BadRequest(Exception):
     """Exception raised for invalid requests."""
-    pass
 
 @flask_app.errorhandler(BadRequest)
 def handle_bad_request(error) -> jsonify:
