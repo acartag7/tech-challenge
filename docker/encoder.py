@@ -37,6 +37,7 @@ def show_help() -> str:
     <p>The input string can only contain alphanumeric characters (A-Z, a-z, 0-9)</p>
     <p>Example: /hello</p>
     <p>Result: {"result": "mjqqt"}</p>
+    <p>To check the status of the server, go to /status</p>
     """
 
 class BadRequest(Exception):
