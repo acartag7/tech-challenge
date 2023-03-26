@@ -69,4 +69,4 @@ jobs:
           pip install yamllint
       - name: Analysing the code with yamllint
         run: |
-          yamllint .
+          yamllint -c config/yamllint.yml .

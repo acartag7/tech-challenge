@@ -1,3 +1,4 @@
+---
 name: Build and push Docker image to ECR
 on:
   push:
@@ -34,13 +35,13 @@ jobs:
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
+          # aws ecr get-login-password --region us-east-1 | \
+          # docker login --username AWS --password-stdin $ECR_REGISTRY
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG docker/
-          # check if we are able to push to ECR
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-# deploy to eks if build and push went ok.
+  # deploy to eks if build and push went ok.
   # deploy:
   #   name: Deploy to EKS
   #   needs: build-and-push-image
