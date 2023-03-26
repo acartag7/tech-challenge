@@ -19,8 +19,11 @@ We expect this process to be triggered whenever a pull request to change the con
 
     ```sh
     .github/workflows - stores GitHub action code.
-    values - stores Helm charts values.
+    terraform - stores Terraform code.
+    terraform/values - stores Helm charts values for the helm chart deployments in the EKS cluster.
     docker - stores the Docker file and scripts.
+    kustomize - stores the kustomize files.
+    config - stores the configuration files for the linting and testing tools.
     ```
 
 3. The docker image has to be retrieved from the registry and deployed as a Docker container in the EKS cluster (through Helm or Terraform).
