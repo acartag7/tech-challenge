@@ -1,13 +1,10 @@
 ---
-name: Build and push Docker image to ECR
+name: Build, push, scan, and deploy to eks cluster
+
 on:
   push:
     branches:
       - main
-    paths:
-      - '**.py'
-      - '**.md'
-      - '**.yml'
 
 jobs:
   build-and-push-image:
