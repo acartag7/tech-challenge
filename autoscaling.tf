@@ -1,5 +1,5 @@
 variable "cluster_autoscaler_version" {
-  default = "8.0.0"
+  default = "9.26.0"
 }
 
 resource "aws_iam_role_policy_attachment" "workers_autoscaling" {

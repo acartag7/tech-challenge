@@ -1,6 +1,6 @@
 '''Tests for the views module.'''
 import unittest
-import json  # Import json module
+import json
 from app import app
 
 class TestViews(unittest.TestCase):

@@ -24,7 +24,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: myapp
-        image: 774858124849.dkr.ecr.us-east-1.amazonaws.com/tech_challenge_arnold:latest
+        image: 504945080963.dkr.ecr.us-east-1.amazonaws.com/tech_challenge_arnold:latest
         ports:
         - containerPort: 80
         readinessProbe:
