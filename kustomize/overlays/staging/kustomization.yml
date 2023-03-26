@@ -6,7 +6,10 @@ resources:
 - ../../base-manifests
 - service.yml
 - namespace.yml
+- ingress.yml
 
+    # change the label for pod affinity
+    # change the label for pod affinity
 patches:
 - patch: |-
     - op: replace
@@ -21,6 +24,10 @@ patches:
     - op: replace
       path: /spec/selector/matchLabels/app
       value: tech-challenge-staging
+    # change the label for pod affinity
+    - op: replace
+      path: /spec/template/spec/affinity/podAntiAffinity/requiredDuringSchedulingIgnoredDuringExecution/0/labelSelector/matchExpressions/0/values/0
+      value: tech-challenge-prod
   target:
     kind: Deployment
     name: base-deployment

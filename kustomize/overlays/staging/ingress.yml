@@ -1,30 +1,19 @@
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    # load balancer priority, lower numbers are evaluated first
-    # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-update-rules.html#update-rule-priority
-    alb.ingress.kubernetes.io/group.order: "10"
-    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30" # in seconds
-    alb.ingress.kubernetes.io/healthcheck-path: /status
-    alb.ingress.kubernetes.io/healty-threshold-count: "1"
-    # by default, it will create a listener rule on port 80
-    # you can specify both ports as well like this: '[{"HTTP": 80}, {"HTTPS": 443}]'
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
-    alb.ingress.kubernetes.io/unhealthy-threshold-count: "3"
   name: tech-challenge-staging
+  annotations:
+    kubernetes.io/ingress.class: nginx
 spec:
-  # if you have the `ingressclass.kubernetes.io/is-default-class=true`
-  # annotation on the ingress class, you don't need this
-  # ingressClassName: aws-alb
   rules:
-    - host: test.example.com
+    - host: hostname.mydomain.com
       http:
         paths:
-          - backend:
-              service:
-                name: tech-challenge-staging
-                port:
-                  number: 80
-            path: /
-            pathType: Prefix
+        - backend:
+            service:
+              name: tech-challenge-staging
+              port:
+                number: 80
+          path: /
+          pathType: Prefix
