@@ -137,3 +137,5 @@ To test it without a domain name, I would have used:
 ```sh
 curl -i -H "Host: mydomain.com" http://xxxxxxxxxxxxx.us-east-1.elb.amazonaws.com/hostname
 ```
+
+In case of deployments I would rather use ArgoCD or some other specific tool for deployments, but for this challenge I just used the kubectl command with kustomize.
