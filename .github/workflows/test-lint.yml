@@ -1,73 +1,52 @@
-name: Test and lint
+name: Test and Lint
 
-# on:
-#   push:
-#     paths:
-#       - '**.py'
-
-on: push
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.py'
+      - '**.md'
+      - '**.yml'
+  workflow_call:
 
 jobs:
-  lint-and-test:
+  dependencies:
+    name: Install dependencies
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Cache pip packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('docker/requirements.txt') }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r docker/requirements.txt
+          pip install pylint
+          pip install pytest
+
+  lint:
+    name: Application Linter
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: dependencies
+    steps:
+      - name: Analysing the code with pylint
+        run: |
+          pylint $(git ls-files '*.py')
+
+  test:
+    name: Run python tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: dependencies
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: [3.7, 3.8, 3.9]
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r docker/requirements.txt
-        pip install pylint
-        pip install pytest
-    - name: Analysing the code with pylint
-      run: |
-        pylint $(git ls-files '*.py')
-    - name: Run unit tests
-      run: |
-        pytest
-
-# name: Deploy to EKS cluster using helm
-# # login to the cluster using the aws cli and deploy the app using helm
-# on:
-#   push:
-#     branches:
-#       - main
-#     paths:
-#       - '**.py'
-# jobs:
-#   deploy:
-#     name: Deploy to EKS cluster using helm
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v2
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: ${{ secrets.AWS_REGION }}
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: ${{ secrets.AWS_REGION }}
-#       - name: Install and configure kubectl
-#         uses: aws-actions/configure-kubectl@v1
-#         with:
-#           cluster-name: ${{ secrets.EKS_CLUSTER_NAME }}
-#           aws-region: ${{ secrets.AWS_REGION }}
-#       - name: Install Helm
-#         uses: azure/setup-helm@v1
-#         with:
-#           version: v3.7.0
-#       - name: Deploy to EKS cluster
-#         run: |
-#           helm upgrade --install --wait --timeout 10m0s --namespace ${{ secrets.EKS_NAMESPACE }} ${{ secrets.EKS_RELEASE_NAME }} ./helm-chart --set image.tag=${{ github.sha }}
+      - name: Run unit tests
+        run: |
+          pytest
