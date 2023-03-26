@@ -83,9 +83,5 @@ jobs:
           aws-region: us-east-1
       - name: Deploy to EKS
         run: |
-          env
-          echo ${{ env.EKS_CLUSTER_NAME }}
-          echo ${{ env.AWS_REGION }}
-          echo $AWS_REGION
-          echo $EKS_CLUSTER_NAME
-          ls -la
+          aws eks --region us-east-1 update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}
+          kubectl get po -A
