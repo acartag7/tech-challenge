@@ -26,5 +26,5 @@ patches:
     version: v1
 
 images:
-- name: 632610202813.dkr.ecr.us-east-1.amazonaws.com/tech_challenge_arnold
-  newTag: 5281773280b7f883e7f0366069d7f6c8f24a51d4
+- name: 309457222015.dkr.ecr.us-east-1.amazonaws.com/tech_challenge_arnold
+  newTag: v1
