@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: staging
+
+resources:
+- ../../base-manifests
+- service.yml
+
+patches:
+- patch: |-
+    - op: replace
+      path: /metadata/name
+      value: tech-challenge-staging
+    - op: replace
+      path: /spec/replicas
+      value: 1
+    - op: replace
+      path: /spec/template/metadata/labels/app
+      value: tech-challenge-staging
+    - op: replace
+      path: /spec/selector/matchLabels/app
+      value: tech-challenge-staging
+  target:
+    kind: Deployment
+    name: base-deployment
+    version: v1
+
+images:
+- name: 632610202813.dkr.ecr.us-east-1.amazonaws.com/tech_challenge_arnold
+  newTag: 723902ba487d6492a897d5308af0aa8f9c1e26fc
