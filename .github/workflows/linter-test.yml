@@ -53,12 +53,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Analysing the code with markdownlint
-        uses: DavidAnson/markdownlint-cli2-action@v9
+      - name: Analysing the code with markdownlin
+        uses: nosborn/github-action-markdown-cli@v3.2.0
         with:
-          command: config
-          globs: |
-            config/markdownlint.yml
+          files: .
+          config_file: config/markdownlint.yml
+          dot: true
 
   test:
     name: Run python tests
