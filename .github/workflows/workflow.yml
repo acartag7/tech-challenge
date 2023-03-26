@@ -1,0 +1,120 @@
+name: Test and lint
+
+# on:
+#   push:
+#     paths:
+#       - '**.py'
+
+on: push
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r docker/requirements.txt
+        pip install pylint
+        pip install pytest
+    - name: Analysing the code with pylint
+      run: |
+        pylint $(git ls-files '*.py')
+    - name: Run unit tests
+      run: |
+        pytest
+
+---
+
+name: Build and push Docker image to ECR
+# on:
+#   push:
+#     # branches:
+#     #   - main
+#     paths:
+#       - '**.py'
+on: push
+
+jobs:
+  build-and-push-image:
+    name: Build and push Docker image to ECR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+# name: Deploy to EKS cluster using helm
+# # login to the cluster using the aws cli and deploy the app using helm
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths:
+#       - '**.py'
+# jobs:
+#   deploy:
+#     name: Deploy to EKS cluster using helm
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ${{ secrets.AWS_REGION }}
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ${{ secrets.AWS_REGION }}
+#       - name: Install and configure kubectl
+#         uses: aws-actions/configure-kubectl@v1
+#         with:
+#           cluster-name: ${{ secrets.EKS_CLUSTER_NAME }}
+#           aws-region: ${{ secrets.AWS_REGION }}
+#       - name: Install Helm
+#         uses: azure/setup-helm@v1
+#         with:
+#           version: v3.7.0
+#       - name: Deploy to EKS cluster
+#         run: |
+#           helm upgrade --install --wait --timeout 10m0s --namespace ${{ secrets.EKS_NAMESPACE }} ${{ secrets.EKS_RELEASE_NAME }} ./helm-chart --set image.tag=${{ github.sha }}
+
+---
+
+# run action on push to any file in the repo
+on: push
+
