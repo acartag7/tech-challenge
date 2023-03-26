@@ -4,7 +4,7 @@ This document is a record of the technical decisions made for the Tech Challenge
 
 ## Table of Contents
 
-- [Encoder Application](#status)
+- [Encoder Application](#encoder-application)
 - [Docker Image](#docker-image)
 - [Testing](#testing)
 - [Linting](#linting)
@@ -28,12 +28,10 @@ Flask also provides a built-in development server that makes it easy to test and
 
 Overall, Flask is a good choice for building simple web applications and APIs in Python, thanks to its simplicity, flexibility, and ease of use.
 
-
 ## Docker Image
 
 The Docker image is built using the Dockerfile in the `docker` folder.
 This Dockerfile uses the `python:3.11.2-slim-bullseye` base image to build a lightweight Docker image for the Tech Challenge Character Encoder app. It sets up the app to run on port 80, uses a non-root user for security, and includes a health check for the /status endpoint. The use of a health check ensures that the container is healthy before it is added to a load balancer or other service discovery mechanism."
-
 
 ## Testing
 
@@ -48,16 +46,13 @@ The application is tested using the `pytest` framework. The tests are located in
 
 The tests are run using the `pytest` framework. The tests are run in a GitHub action workflow that is triggered whenever a pull request is made to the `main` branch. The workflow runs the tests and outputs the results.
 
-
 ## Linting
 
 We are running linters for the python code, markdown code and yaml code. The linters are run in a github workflow that is triggered whenever a pull request is made to the `main` branch. The workflow runs the linters and outputs the results.
 
-
 ## Build
 
 The application is built using the `docker build` command. The build is run in a GitHub action workflow that is triggered whenever a pull request is made to the `main` branch. The workflow builds the Docker image and pushes it an AWS ECR repository.
-
 
 ## CI
 
@@ -78,7 +73,6 @@ Here's an overview of the workflow:
 
 Overall, this workflow is designed to ensure that the Python code in the repository is well-formatted and free of errors and that all unit tests pass. It is a good practice to run such automated tests as part of a continuous integration (CI) process to ensure that the codebase remains healthy and maintainable over time.
 
-
 ## CD
 
 This GitHub Actions workflow builds a Docker image, pushes it to an Amazon Elastic Container Registry (ECR), scans it for vulnerabilities using Trivy, and deploys it to an Amazon Elastic Kubernetes Service (EKS) cluster.
@@ -90,9 +84,10 @@ Here's an overview of the workflow:
 - The second job, vulnerability-scan, configures AWS credentials, logs in to the ECR, and uses the Trivy vulnerability scanner to scan the Docker image for critical vulnerabilities.
 - The third job, deploy, configures AWS credentials, checks out the code, logs in to the ECR, updates the kubeconfig for the EKS cluster, uses Kustomize to set the Docker image tag in the Kubernetes deployment manifest, applies the manifest, waits for the deployment to finish rolling out, and gets the hostname for the Kubernetes service.
 
-### Here are the steps performed by each job:
+### Here are the steps performed by each job
 
 #### build-and-push-image job
+
 - Check out the code using the actions/checkout action.
 - Configure AWS credentials using the aws-actions/configure-aws-credentials action and the secrets stored in the repository.
 - Log in to the ECR using the aws-actions/amazon-ecr-login action.
@@ -100,6 +95,7 @@ Here's an overview of the workflow:
 - Push the Docker image to the ECR using the docker push command.
 
 #### vulnerability-scan job
+
 - Configure AWS credentials using the aws-actions/configure-aws-credentials action and the secrets stored in the repository.
 - Log in to the ECR using the aws-actions/amazon-ecr-login action.
 - Use the aquasecurity/trivy-action action to run a vulnerability scan on the Docker image in the ECR.
@@ -107,6 +103,7 @@ Here's an overview of the workflow:
 - Set options for the trivy command, including the image reference, output format, exit code, and vulnerability types and severities to scan for.
 
 #### deploy job
+
 - Configure AWS credentials using the aws-actions/configure-aws-credentials action and the secrets stored in the repository.
 - Check out the code using the actions/checkout action.
 - Log in to the ECR using the aws-actions/amazon-ecr-login action.
@@ -136,6 +133,7 @@ The kubernetes service is configured to expose the deployment on port 80. The se
 
 There was an ingress controller on the cluster but it didn't seem to work, so I just used the service to expose the deployment to the internet.
 To test it without a domain name, I would have used:
+
 ```sh
 curl -i -H "Host: mydomain.com" http://xxxxxxxxxxxxx.us-east-1.elb.amazonaws.com/hostname
 ```
