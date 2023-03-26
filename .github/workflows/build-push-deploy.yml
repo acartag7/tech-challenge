@@ -85,4 +85,7 @@ jobs:
         run: |
           env
           echo ${{ env.EKS_CLUSTER_NAME }}
-
+          echo ${{ env.AWS_REGION }}
+          echo $AWS_REGION
+          echo $EKS_CLUSTER_NAME
+          ls -la
