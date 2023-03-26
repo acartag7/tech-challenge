@@ -3,10 +3,6 @@ name: Lint and Test
 on:
   pull_request:
     branches-ignore: [ main ]
-    paths:
-      - '**.py'
-      - '**.md'
-      - '**.yml'
   workflow_call:
 
 jobs:
