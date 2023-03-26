@@ -24,7 +24,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: tech-challenge-container
-        image: 632610202813.dkr.ecr.us-east-1.amazonaws.com/tech_challenge_arnold:latest
+        image: 309457222015.dkr.ecr.us-east-1.amazonaws.com/tech_challenge_arnold:latest
         ports:
         - containerPort: 80
         readinessProbe:
