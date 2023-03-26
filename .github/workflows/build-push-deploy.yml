@@ -46,8 +46,12 @@ jobs:
     steps:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
         with:
-          image-ref: $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}'
+          image-ref: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -55,7 +59,7 @@ jobs:
           severity: 'CRITICAL'
   deploy:
     name: Deploy to EKS
-    needs: build-and-push-image
+    needs: vulnerability-scan
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS credentials
@@ -64,6 +68,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      - name: Install AWS CLI
+        uses: chrislennon/action-aws-cli@v1.1
       - name: Deploy to EKS
         run: |
           aws eks --region us-east-1 update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}
