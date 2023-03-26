@@ -73,7 +73,7 @@ jobs:
           severity: 'CRITICAL'
   deploy:
     name: Deploy to EKS
-    #needs: vulnerability-scan
+    needs: vulnerability-scan
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS credentials
