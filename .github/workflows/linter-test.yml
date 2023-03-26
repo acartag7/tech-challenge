@@ -2,8 +2,8 @@ name: Lint and Test
 
 on:
   pull_request:
-    types:
-      - opened
+    branches:
+    - main
   workflow_call:
 
 jobs:
