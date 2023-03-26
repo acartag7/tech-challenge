@@ -92,5 +92,4 @@ jobs:
         run: |
           aws eks --region us-east-1 update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}
           cd kustomize/overlays/production/
-          kustomize edit set image ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} && kustomize build .
-          kubectl apply -k .
+          kustomize edit set image ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} && kustomize build . | kubectl apply -f -
