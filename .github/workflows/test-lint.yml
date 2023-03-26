@@ -112,9 +112,3 @@ jobs:
 #       - name: Deploy to EKS cluster
 #         run: |
 #           helm upgrade --install --wait --timeout 10m0s --namespace ${{ secrets.EKS_NAMESPACE }} ${{ secrets.EKS_RELEASE_NAME }} ./helm-chart --set image.tag=${{ github.sha }}
-
----
-
-# run action on push to any file in the repo
-on: push
-
