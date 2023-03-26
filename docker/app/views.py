@@ -1,13 +1,10 @@
-"""
-This module contains a Flask app that encodes alphanumeric strings
-"""
+'''This module contains a Flask app that encodes alphanumeric strings'''
 
-import os
-from flask import Flask, jsonify
+# pylint: disable=import-error
+from flask import jsonify
+from app import app
 
-flask_app = Flask(__name__)
-
-@flask_app.route('/<string:plaintext>')
+@app.route('/<string:plaintext>')
 def encode(plaintext: str) -> jsonify:
     """Encodes a given string with a simple cipher."""
     if not plaintext.isalnum():
@@ -23,12 +20,12 @@ def encode(plaintext: str) -> jsonify:
             encoded += str((int(char) + 5) % 10)
     return jsonify({'result': encoded})
 
-@flask_app.route('/status')
+@app.route('/status')
 def status() -> jsonify:
     """Returns the status of the server."""
     return jsonify({'status': 'ok'})
 
-@flask_app.route('/help')
+@app.route('/help')
 def show_help() -> str:
     """Returns instructions on how to use the server."""
     return """
@@ -43,20 +40,7 @@ def show_help() -> str:
 class BadRequest(Exception):
     """Exception raised for invalid requests."""
 
-@flask_app.errorhandler(BadRequest)
+@app.errorhandler(BadRequest)
 def handle_bad_request(error) -> jsonify:
     """Handles BadRequest exceptions."""
     return jsonify({'error': str(error)}), 400
-
-if __name__ == '__main__':
-    port = int(os.environ.get('FLASK_RUN_PORT', 80))
-    flask_app.run(port=port)
-
-# If a config file is used, the app can be started with:
-# if __name__ == '__main__':
-#     app.run(port=config['port'])
-
-# The config file is a simple Python file that sets the config variables:
-# config = {
-#     'port': 80
-# }

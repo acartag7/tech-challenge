@@ -1,7 +1,7 @@
 # Build stage
 FROM python:3.11.2-slim-bullseye
 
-ARG FLASK_APP=encoder.py
+ARG FLASK_APP=app/views.py
 
 LABEL \
     org.opencontainers.image.authors="Arnold Cartagena - cartagena.arnold@gmail.com" \
@@ -12,7 +12,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt
 
-COPY ${FLASK_APP} .
+COPY app app
 
 # Set the environment variables for Flask
 ENV FLASK_APP=${FLASK_APP}
