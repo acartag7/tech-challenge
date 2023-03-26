@@ -84,6 +84,9 @@ jobs:
           aws-region: us-east-1
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
       - name: Deploy to EKS
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -93,4 +96,4 @@ jobs:
           aws eks --region us-east-1 update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }}
           cd kustomize/overlays/production/
           kustomize edit set image ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} && kustomize build . | kubectl apply -f -
-          kubectl get po -n prod
+          kubectl rollout status deployment/tech-challenge-prod -n prod --timeout=5m
