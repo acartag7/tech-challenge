@@ -53,12 +53,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install dependencies
-        run: |
-          pip install markdownlint
       - name: Analysing the code with markdownlint
-        run: |
-          markdownlint -c config/markdownlint.yml .
+        uses: DavidAnson/markdownlint-cli2-action@v9
+        with:
+          command: config
+          globs: |
+            config/markdownlint.yml
 
   test:
     name: Run python tests
