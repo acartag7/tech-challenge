@@ -5,6 +5,7 @@ namespace: prod
 resources:
 - ../../base-manifests
 - service.yml
+- namespace.yml
 
 patches:
 - patch: |-

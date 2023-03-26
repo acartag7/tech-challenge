@@ -5,6 +5,7 @@ namespace: staging
 resources:
 - ../../base-manifests
 - service.yml
+- namespace.yml
 
 patches:
 - patch: |-
@@ -27,4 +28,4 @@ patches:
 
 images:
 - name: 309457222015.dkr.ecr.us-east-1.amazonaws.com/tech_challenge_arnold
-  newTag: v1
+  newTag: 5e0c329048d33c5dfc944d4630978bbf5033636a

@@ -94,3 +94,16 @@ jobs:
           cd kustomize/overlays/production/
           kustomize edit set image ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} && kustomize build . | kubectl apply -f -
           kubectl rollout status deployment/tech-challenge-prod -n prod --timeout=5m
+          kubectl get svc -n prod --output jsonpath="{.items[?(@.metadata.name=='tech-challenge-prod')].status.loadBalancer.ingress[].hostname}"
+      # - name: deploy with helm
+      #   uses: bitovi/github-actions-deploy-eks-helm@v1.0.0
+      #   with:
+      #     aws-access-key-id: $
+      #     aws-secret-access-key: $
+      #     aws-region: us-east-1
+      #     cluster-name: ${{ secrets.EKS_CLUSTER_NAME }}
+      #     config-files: 
+      #     chart-path: chart/
+      #     namespace: dev
+      #     values: key1=value1,key2=value2
+      #     name: tech-challenge
